@@ -170,6 +170,7 @@ The algorithm to do that was pretty simple. Just kept 20 frames of history and a
 I understand that this is a pretty idiot code. But it worked fairly well on all the video, eliminating false positives from frame to frame and smoothing the result. I tried using weights on frames, but doing just the average worked better.
 I also included another thresholding after taking the average from frame to frame, so I could avoid storing garbage from frame to frame. The threshold was just 3, since this was less related to the final result than the final average.
 Here is an example of frame to frame averaging (I just plotted 3 frames, and the result of the averaging).
+
 ![enter image description here](https://lh3.googleusercontent.com/8zX7pC7u46YKgRiEDhb4sUEb2GE-r_I0n2earFznFN09TmaFsIfH-GILe6bwQFjT_hPBYVbSKg=s0 "frame-to-frame-average.png")
 
 #### <i class="icon-file"></i> Post Processing
@@ -193,8 +194,9 @@ About the processing time, my algorithm is really heavy. Speacially the windowin
 I have to take much samples through a lot of windows on the image to get a bunch of boxes so I can filter.
 I tried with less windows, and found that usually the amount of false positives was close to the positive, restricting the possibility to filter. I think that a better classification would help on that, reducing the false positives and reducing the need of heavy filtering. This is something to try and get an improvement (as far as I measured, it took around 4 seconds to run windowing, this was the bottleneck).
 I think the next step would be to try with another classifier and reduce the amount of windows.
+Another issue that I found is that the algorithm is not using full CPU capacity. It stays with around 30%, and I think this may be related to single core processing. This is something to investigate, and can give a notable improvement in performance.
 About the result, I found it to detect the cars properly. Some false positives still appear, but they are small and vanishes soon. I tried to implement another frame to frame function to ignore false positives, but my tried prove to get worse results than this one. Another try was to implement a function to ignore boxes with small area inside, but this proves to remove some positive cars in a far distance, so I gave up from this idea and decided that Its better to have some noise than to remove positive cars detections.
-By the end, I think this algorithm would probably fail if the road conditions changes. I saw that a lot of training data for not cars include images from the video in question, so in a new video its probable to perform not as good as in the project video because of the training conditions on the dataset provided.
+By the end, I think this algorithm would probably fail if the road conditions changes. I saw that a lot of training data for not cars include images from the video in question, so in a new video its probable to perform not as good as in the project video because of the training conditions on the dataset provided. Another possible failure would be if some dirt or even rain droplets stay in focus of the camera, since they can be detected by the classifier and end up appearing on the final heat map (since they will be constantly with the same shape and position).
 
 
 
